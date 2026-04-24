@@ -1,0 +1,17 @@
+{
+  "name": "spill-voice-of-the-campus",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Anonymous but verified reporting platform for the UPT community.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:mobile": "npm --workspace apps/mobile run start",
+    "dev:api": "npm --workspace apps/api run start:dev",
+    "lint": "echo \"Add lint commands after initializing each app\"",
+    "test": "echo \"Add test commands after initializing each app\""
+  }
+}
