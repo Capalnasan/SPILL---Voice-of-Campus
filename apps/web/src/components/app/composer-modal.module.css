@@ -1,0 +1,461 @@
+.dialog {
+  width: min(620px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(820px, calc(100dvh - 36px));
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: 23px;
+  box-shadow: var(--shadow-2);
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+  backdrop-filter: blur(3px);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+  padding: 18px 24px 22px;
+  overflow-y: auto;
+}
+
+.handle {
+  display: none;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-left: -8px;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.header button:hover {
+  background: var(--paper-soft);
+}
+
+.header svg {
+  width: 26px;
+  height: 26px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 31px;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: -1px;
+}
+
+.editor {
+  position: relative;
+  display: flex;
+  min-height: 245px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+}
+
+.editor:focus-within {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 12%, transparent);
+}
+
+.editor textarea {
+  width: 100%;
+  min-height: 245px;
+  padding: 18px 18px 44px;
+  resize: none;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.editor textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+.editor output {
+  position: absolute;
+  right: 16px;
+  bottom: 13px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 58px;
+  margin-top: 14px;
+  padding: 10px 15px;
+  text-align: left;
+  background: var(--paper-violet);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.settingRow:hover {
+  background: var(--surface-hover);
+}
+
+.settingRow > svg:first-child {
+  flex: 0 0 auto;
+  width: 25px;
+  height: 25px;
+}
+
+.settingRow > svg:last-child {
+  width: 18px;
+  margin-left: auto;
+}
+
+.settingRow > span {
+  display: grid;
+  flex: 1;
+  gap: 1px;
+  font-size: 15px;
+}
+
+.settingRow small {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 29px;
+  background: var(--line-strong);
+  border-radius: 999px;
+  transition: background 160ms ease;
+}
+
+.switch b {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 23px;
+  height: 23px;
+  background: var(--on-accent);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(17, 16, 25, 0.22);
+  transition: transform 160ms ease;
+}
+
+.switchOn {
+  background: var(--coral);
+}
+
+.switchOn b {
+  transform: translateX(19px);
+}
+
+.extras {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.extras button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 88px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.extras button:hover,
+.extras button.extraActive {
+  color: var(--violet-deep);
+  background: var(--paper-violet);
+  border-color: var(--violet);
+}
+
+.extras svg {
+  width: 26px;
+  height: 26px;
+}
+
+.error {
+  margin: 9px 2px 0;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+.photoPreview {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 9px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.photoPreview > div {
+  position: relative;
+  width: 88px;
+  height: 58px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.photoPreview img {
+  object-fit: cover;
+}
+
+.photoPreview span {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photoPreview button,
+.pollEditor > div button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--ink-soft);
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.photoPreview button:hover,
+.pollEditor > div button:hover {
+  color: var(--danger);
+  background: var(--surface-hover);
+}
+
+.photoPreview svg,
+.pollEditor > div svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pollEditor {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 14px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+}
+
+.pollEditor legend {
+  padding: 0 5px;
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.pollEditor > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 5px;
+}
+
+.pollEditor input,
+.noteEditor input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  outline: 0;
+}
+
+.pollEditor input:focus,
+.noteEditor input:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 14%, transparent);
+}
+
+.pollEditor .addOption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 36px;
+  padding: 0 10px;
+  color: var(--violet-deep);
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.addOption:hover {
+  background: var(--paper-violet);
+}
+
+.addOption svg {
+  width: 16px;
+  height: 16px;
+}
+
+.noteEditor {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+}
+
+.noteEditor label {
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.noteEditor label span,
+.noteEditor small {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.footer button {
+  min-height: 52px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.cancel {
+  background: var(--paper-violet);
+}
+
+.cancel:hover {
+  background: var(--surface-hover);
+}
+
+.submit {
+  color: var(--on-accent);
+  background: var(--coral);
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--coral-hover);
+}
+
+.submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+@media (max-width: 759px) {
+  .dialog {
+    width: 100vw;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .form {
+    min-height: 100dvh;
+    max-height: none;
+    padding: 13px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .handle {
+    display: block;
+    align-self: center;
+    width: 43px;
+    height: 5px;
+    margin-bottom: 8px;
+    background: var(--line-strong);
+    border-radius: 999px;
+  }
+
+  .header {
+    margin-bottom: 17px;
+  }
+
+  .header h2 {
+    font-size: 28px;
+  }
+
+  .editor,
+  .editor textarea {
+    min-height: 244px;
+  }
+
+  .settingRow {
+    min-height: 57px;
+    margin-top: 12px;
+  }
+
+  .extras {
+    gap: 10px;
+    margin-top: 13px;
+  }
+
+  .extras button {
+    min-height: 103px;
+    padding-inline: 5px;
+    font-size: 12px;
+  }
+
+  .footer {
+    margin-top: auto;
+    padding-top: 18px;
+  }
+}
+

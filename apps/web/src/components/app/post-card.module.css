@@ -1,0 +1,402 @@
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 16px;
+  padding: 19px 6px 18px;
+  border-bottom: 1px solid var(--line);
+  content-visibility: auto;
+  contain-intrinsic-size: 240px;
+}
+
+.body {
+  min-width: 0;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 39px;
+}
+
+.meta {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 10px;
+  line-height: 1.15;
+}
+
+.meta strong {
+  font-size: 15px;
+  font-weight: 780;
+}
+
+.meta a:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.meta time {
+  flex-basis: 100%;
+  order: 3;
+  margin-top: 3px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.topic,
+.anonymous {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 13px;
+  color: var(--violet-deep);
+  background: var(--paper-violet);
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.anonymous {
+  order: 4;
+  margin: -20px 0 0 38px;
+  padding: 0;
+  color: var(--ink-soft);
+  background: none;
+  font-size: 11px;
+}
+
+.more {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 36px;
+  height: 34px;
+  margin-top: -5px;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.more:hover {
+  background: var(--paper-soft);
+}
+
+.more svg {
+  width: 20px;
+}
+
+.menu {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  z-index: 20;
+  display: grid;
+  width: 190px;
+  padding: 7px;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-2);
+}
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 39px;
+  padding: 0 10px;
+  text-align: left;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.menu button:hover {
+  background: var(--surface-hover);
+}
+
+.menu svg {
+  width: 17px;
+  height: 17px;
+}
+
+.menu .dangerAction {
+  color: var(--danger);
+}
+
+.contentNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0 4px;
+  padding: 5px 8px;
+  color: var(--ink-soft);
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.contentNote svg {
+  width: 14px;
+  height: 14px;
+  color: var(--coral);
+}
+
+.editPanel {
+  display: grid;
+  gap: 9px;
+  margin: 5px 0 14px;
+}
+
+.editPanel textarea {
+  width: 100%;
+  min-height: 108px;
+  padding: 12px;
+  resize: vertical;
+  color: var(--ink);
+  background: var(--surface-muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  outline: 0;
+}
+
+.editPanel textarea:focus {
+  border-color: var(--violet);
+}
+
+.editPanel > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.editPanel button {
+  min-height: 35px;
+  padding: 0 12px;
+  background: var(--surface-hover);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.editPanel button:last-child {
+  color: var(--on-accent);
+  background: var(--coral);
+}
+
+.editPanel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.contentLink {
+  display: block;
+}
+
+.content {
+  max-width: 670px;
+  margin: 5px 0 15px;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1.24;
+  letter-spacing: -0.18px;
+}
+
+.imageFrame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 5.25 / 1;
+  margin: 10px 0 13px;
+  overflow: hidden;
+  background: #4a2d1e;
+  border-radius: 10px;
+}
+
+.imageFrame img {
+  object-fit: cover;
+}
+
+.poll {
+  display: grid;
+  gap: 8px;
+  margin: 3px 0 13px;
+  padding: 0;
+  border: 0;
+}
+
+.poll button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  overflow: hidden;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.poll button:hover,
+.poll button.pollSelected {
+  border-color: var(--violet);
+}
+
+.poll i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  background: color-mix(in srgb, var(--violet) 24%, var(--surface));
+}
+
+.poll span,
+.poll strong {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+}
+
+.poll span {
+  flex: 1;
+  text-align: left;
+}
+
+.poll small {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(26px, 7%, 54px);
+  min-height: 31px;
+}
+
+.actions button,
+.actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: color 140ms ease, transform 140ms ease;
+}
+
+.actions button:hover,
+.actions a:hover {
+  color: var(--violet-deep);
+  transform: translateY(-1px);
+}
+
+.actions svg {
+  width: 21px;
+  height: 21px;
+  stroke-width: 2;
+}
+
+.actions .liked,
+.actions .saved {
+  color: var(--coral);
+}
+
+.feedback {
+  margin: 7px 0 0;
+  color: var(--success);
+  font-size: 11px;
+}
+
+@media (max-width: 759px) {
+  .card {
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 18px 15px;
+  }
+
+  .card > :first-child {
+    width: 46px;
+    height: 46px;
+  }
+
+  .header {
+    min-height: 38px;
+  }
+
+  .meta {
+    column-gap: 7px;
+  }
+
+  .meta strong {
+    font-size: 14px;
+  }
+
+  .meta time {
+    margin-top: 2px;
+  }
+
+  .topic {
+    display: none;
+  }
+
+  .anonymous {
+    display: inline;
+    margin: -18px 0 0 31px;
+  }
+
+  .content {
+    margin: 6px 0 11px;
+    font-family: var(--font-sans);
+    font-size: 15.5px;
+    line-height: 1.37;
+    letter-spacing: -0.08px;
+  }
+
+  .imageFrame {
+    aspect-ratio: 2.15 / 1;
+    margin-block: 10px 14px;
+  }
+
+  .actions {
+    justify-content: space-between;
+    gap: 12px;
+    padding-right: 3px;
+  }
+
+  .actions button,
+  .actions a {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .actions svg {
+    width: 23px;
+    height: 23px;
+  }
+
+  .actionLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+

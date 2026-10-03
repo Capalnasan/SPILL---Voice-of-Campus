@@ -1,38 +1,33 @@
-# Spill - Voice of the Campus
+# Spill
 
-Spill is an anonymous but verified reporting platform for the Universitatea Politehnica Timisoara community. Students, teachers, assistants, and staff can report real academic and campus-related issues while remaining anonymous inside the app.
+Spill is a pseudonymous community conversation app designed for honest campus talk with clear safety controls. This repository currently contains the frontend prototype only; backend/API work is intentionally deferred.
 
-## Project Structure
+## Frontend
 
-```text
-.
-├── apps
-│   ├── api              # Node.js / NestJS backend API
-│   ├── mobile           # React Native mobile app
-│   └── web              # React web app
-├── database             # PostgreSQL schema, migrations, seeds
-├── docs                 # Product, architecture, security, and AI docs
-├── infra                # Deployment and local infrastructure config
-├── packages
-│   ├── shared           # Shared types, constants, schemas
-│   └── ui               # Shared UI ideas/components between apps
-└── scripts              # Utility scripts for development and automation
+The web app lives in `apps/web` and uses Next.js 16, React 19, TypeScript, CSS Modules, and local fixture state.
+
+```bash
+npm install
+npm run dev
 ```
 
-## Core Modules
+Open `http://localhost:3000` for the public landing page or `http://localhost:3000/feed` for the product demo.
 
-- Verified university authentication
-- Anonymous post creation
-- AI relevance and clarity review
-- Moderated public feed
-- Sensitive-case manual review
-- Three-key identity reveal mechanism
-- Weekly and monthly institutional reports
+Useful checks:
 
-## Suggested Stack
+```bash
+npm run typecheck
+npm run build
+```
 
-- Web: React
-- Mobile: React Native
-- Backend: Node.js / NestJS
-- Database: PostgreSQL
-- AI: moderation, rewrite guidance, categorization, and report summaries
+## Implemented frontend routes
+
+- `/` — public landing page
+- `/login`, `/register` — frontend-only authentication flow
+- `/feed` — interactive feed and post composer
+- `/post/[id]` — threaded conversation and replies
+- `/explore`, `/activity`, `/saved`, `/profile`, `/settings` — supporting product surfaces
+- `/admin` — frontend-only moderation queue demo
+- `/community-rules`, `/privacy`, `/terms` — public trust pages
+
+The mock data and local interactions are deliberately isolated in `apps/web/src/data` and `apps/web/src/providers` so a future API layer can replace them without redesigning the interface.

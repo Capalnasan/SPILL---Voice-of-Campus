@@ -1,0 +1,132 @@
+import type { Post, Reply } from "@/types/models";
+
+export const initialPosts: Post[] = [
+  {
+    id: "midnight-library",
+    author: "midnightlibrary",
+    time: "2h",
+    topic: "campus life",
+    content:
+      "there’s something special about seeing the library this full. different majors, same late-night grind. we got this. 💜",
+    likes: 142,
+    replies: 23,
+    liked: true,
+    saved: false,
+    avatar: "moon",
+    avatarTone: "violet",
+  },
+  {
+    id: "soft-launch",
+    author: "softlaunch",
+    time: "5h",
+    topic: "relationships",
+    content:
+      "is it normal to still think about someone even after a clean break? not looking for advice, just needed to get this out there.",
+    likes: 87,
+    replies: 56,
+    liked: false,
+    saved: true,
+    anonymous: true,
+    avatar: "flower",
+    avatarTone: "pink",
+  },
+  {
+    id: "north-star",
+    author: "northstar",
+    time: "1d",
+    topic: "small wins",
+    content:
+      "got an A on my orgo midterm!!! after so many rough weeks this feels unreal, consistency really does pay off 🌱",
+    likes: 214,
+    replies: 28,
+    liked: false,
+    saved: false,
+    image: "/images/study-progress.png",
+    avatar: "star",
+    avatarTone: "lime",
+  },
+  {
+    id: "cafe-rumbles",
+    author: "caferumbles",
+    time: "6h",
+    topic: "questions",
+    content: "hot take: campus life is 10% classes and 90% people watching. what’s yours?",
+    likes: 317,
+    replies: 52,
+    liked: false,
+    saved: false,
+    anonymous: true,
+    avatar: "ghost",
+    avatarTone: "coral",
+  },
+  {
+    id: "sunday-reset",
+    author: "sunnysideup",
+    time: "8h",
+    topic: "small wins",
+    content: "what’s something small that made your day better today?",
+    likes: 96,
+    replies: 41,
+    liked: false,
+    saved: false,
+    avatar: "spark",
+    avatarTone: "lime",
+    poll: {
+      options: [
+        { label: "A quiet cup of coffee", percentage: 61 },
+        { label: "A message from a friend", percentage: 39 },
+      ],
+      votes: 184,
+    },
+  },
+];
+
+export const initialReplies: Reply[] = [
+  {
+    id: "r1",
+    author: "notetaker",
+    time: "1h",
+    content: "literally. everyone’s in the chat but no one’s on the same page.",
+    likes: 54,
+    depth: 0,
+    avatar: "ghost",
+    avatarTone: "lime",
+  },
+  {
+    id: "r2",
+    author: "midnightlibrary",
+    time: "1h",
+    content: "and somehow it’s still due tomorrow",
+    likes: 28,
+    depth: 1,
+    avatar: "moon",
+    avatarTone: "violet",
+  },
+  {
+    id: "r3",
+    author: "campuscryptid",
+    time: "56m",
+    content: "we’re all just vibing and winging it at this point",
+    likes: 17,
+    depth: 0,
+    avatar: "ghost",
+    avatarTone: "coral",
+  },
+  {
+    id: "r4",
+    author: "notetaker",
+    time: "32m",
+    content: "solidarity 🤝",
+    likes: 8,
+    depth: 1,
+    avatar: "ghost",
+    avatarTone: "lime",
+  },
+];
+
+export const trendingTopics = [
+  { label: "Exam season", count: "8.4K spills this week", icon: "flame" as const },
+  { label: "Roommate stories", count: "5.1K spills this week", icon: "message" as const },
+  { label: "Late-night thoughts", count: "4.3K spills this week", icon: "moon" as const },
+];
+

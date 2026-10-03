@@ -1,0 +1,31 @@
+.list {
+  padding: 0 24px 100px;
+}
+
+.empty {
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  color: var(--violet-deep);
+  background: var(--paper-violet);
+  border-radius: 50% 44% 52% 48%;
+  transform: rotate(-4deg);
+}
+
+.icon svg { transform: rotate(4deg); }
+.empty h2 { margin: 18px 0 5px; font-size: 1.7rem; }
+.empty p { margin: 0; color: var(--ink-soft); font-size: 0.88rem; }
+
+@media (max-width: 620px) {
+  .list { padding-inline: 16px; }
+}
+

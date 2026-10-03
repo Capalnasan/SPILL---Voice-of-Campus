@@ -1,17 +1,20 @@
 {
-  "name": "spill-voice-of-the-campus",
-  "private": true,
+  "name": "spill",
   "version": "0.1.0",
-  "description": "Anonymous but verified reporting platform for the UPT community.",
+  "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "dev:web": "npm --workspace apps/web run dev",
-    "dev:mobile": "npm --workspace apps/mobile run start",
-    "dev:api": "npm --workspace apps/api run start:dev",
-    "lint": "echo \"Add lint commands after initializing each app\"",
-    "test": "echo \"Add test commands after initializing each app\""
+    "dev": "npm run dev --workspace=@spill/web",
+    "build": "npm run build --workspace=@spill/web",
+    "typecheck": "npm run typecheck --workspace=@spill/web",
+    "lint": "npm run lint --workspace=@spill/web",
+    "test": "npm run test --workspace=@spill/web",
+    "test:e2e": "npm run test:e2e --workspace=@spill/web"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }

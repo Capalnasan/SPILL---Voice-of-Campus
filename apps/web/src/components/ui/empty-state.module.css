@@ -1,0 +1,14 @@
+.empty {
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 36px 20px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.empty strong { color: var(--ink); font-size: 28px; line-height: 1.1; }
+.empty > span:last-child { font-size: 13px; }
+.icon { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 5px; color: var(--violet-deep); background: var(--paper-violet); border-radius: 50%; }

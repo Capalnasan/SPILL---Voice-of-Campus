@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px 24px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-variation-settings: "SOFT" 30, "WONK" 1;
+  font-weight: 760;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.description {
+  max-width: 540px;
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.93rem;
+}
+
+.action {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 620px) {
+  .header {
+    align-items: flex-start;
+    padding: 20px 18px 16px;
+  }
+
+  .title {
+    font-size: 2.45rem;
+  }
+
+  .description {
+    margin-top: 6px;
+  }
+}

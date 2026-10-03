@@ -1,0 +1,95 @@
+.content {
+  padding: 4px 24px 100px;
+}
+
+.section {
+  padding: 28px 0 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 12px;
+}
+
+.sectionHeading > svg { margin-top: 2px; color: var(--violet); }
+.sectionHeading h2 { margin: 0; font-family: var(--font-display); font-size: 1.3rem; }
+.sectionHeading p { margin: 1px 0 0; color: var(--ink-soft); font-size: 0.76rem; }
+
+.row,
+.linkRow {
+  display: flex;
+  min-height: 60px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 6px 10px 31px;
+  background: transparent;
+  border-radius: 9px;
+  font-size: 0.86rem;
+  text-align: left;
+  transition: background 160ms ease;
+}
+
+.linkRow { cursor: pointer; }
+.linkRow:hover { background: var(--paper-soft); }
+.row strong,
+.row small { display: block; }
+.row strong { font-size: 0.86rem; }
+.row small { margin-top: 2px; color: var(--ink-soft); font-size: 0.73rem; }
+
+.switch {
+  position: relative;
+  width: 43px;
+  height: 24px;
+  flex: 0 0 auto;
+  background: #c9c5d3;
+  border-radius: 999px;
+  transition: background 160ms ease;
+}
+
+.switch span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: var(--surface-raised);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(17, 16, 25, 0.18);
+  transition: transform 180ms ease;
+}
+
+.switchOn { background: var(--violet); }
+.switchOn span { transform: translateX(19px); }
+.linkLabel { display: inline-flex; align-items: center; gap: 9px; }
+.value { margin-left: auto; color: var(--ink-soft); font-size: 0.76rem; }
+.signOut { color: var(--danger); }
+
+.toast {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  z-index: 80;
+  padding: 10px 15px;
+  color: var(--on-accent);
+  background: var(--ink);
+  border-radius: 9px;
+  font-size: 0.78rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.toastVisible { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 620px) {
+  .content { padding-inline: 16px; }
+  .row,
+  .linkRow { padding-left: 6px; }
+  .toast { bottom: 88px; }
+}

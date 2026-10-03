@@ -1,0 +1,50 @@
+.avatar {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  color: var(--ink);
+  border-radius: 999px;
+}
+
+.avatar svg {
+  width: 51%;
+  height: 51%;
+}
+
+.small {
+  width: 34px;
+  height: 34px;
+}
+
+.medium {
+  width: 46px;
+  height: 46px;
+}
+
+.large {
+  width: 52px;
+  height: 52px;
+}
+
+.violet {
+  color: white;
+  background: #3e2a79;
+}
+
+.pink {
+  background: #ffb7dc;
+}
+
+.lime {
+  background: var(--lime);
+}
+
+.coral {
+  background: #ff8580;
+}
+
+.blue {
+  background: #b9d8ff;
+}
+
