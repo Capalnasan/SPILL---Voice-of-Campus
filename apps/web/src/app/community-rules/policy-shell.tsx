@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SpillBrand } from "@/components/brand/SpillBrand";
 import styles from "./policy.module.css";
 
 export type PolicySection = {
@@ -26,9 +27,7 @@ export function PolicyShell({
   return (
     <div className={`${styles.page} ${styles[accent]}`}>
       <header className={styles.header}>
-        <Link className={styles.brand} href="/" aria-label="Spill home">
-          spill<span aria-hidden="true" />
-        </Link>
+        <SpillBrand className={styles.brand} />
         <nav aria-label="Public pages">
           <Link href="/community-rules">Community rules</Link>
           <Link href="/privacy">Privacy</Link>
@@ -85,7 +84,7 @@ export function PolicyShell({
       </main>
 
       <footer className={styles.footer}>
-        <Link className={styles.brand} href="/" aria-label="Spill home">spill</Link>
+        <SpillBrand className={styles.brand} />
         <p>Honest conversations. Human boundaries.</p>
         <nav aria-label="Legal">
           <Link href="/community-rules">Community rules</Link>

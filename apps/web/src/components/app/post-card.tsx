@@ -22,9 +22,8 @@ import { Avatar } from "./avatar";
 import styles from "./post-card.module.css";
 
 export function PostCard({ post }: { post: Post }) {
-  const { blockAuthor, muteAuthor, removePost, toggleLike, toggleSaved, updatePost } = useSpill();
+  const { blockAuthor, muteAuthor, removePost, toggleLike, toggleSaved, updatePost, voteInPoll } = useSpill();
   const [shareState, setShareState] = useState<"idle" | "shared" | "copied">("idle");
-  const [selectedPollOption, setSelectedPollOption] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(post.content);
@@ -163,16 +162,17 @@ export function PostCard({ post }: { post: Post }) {
               <button
                 type="button"
                 key={option.label}
-                className={selectedPollOption === index ? styles.pollSelected : ""}
-                aria-pressed={selectedPollOption === index}
-                onClick={() => setSelectedPollOption(index)}
+                className={post.poll?.selectedOption === index ? styles.pollSelected : ""}
+                aria-pressed={post.poll?.selectedOption === index}
+                disabled={post.poll?.selectedOption !== undefined}
+                onClick={() => voteInPoll(post.id, index)}
               >
                 <i style={{ width: `${option.percentage}%` }} aria-hidden="true" />
                 <span>{option.label}</span>
                 <strong>{option.percentage}%</strong>
               </button>
             ))}
-            <small>{post.poll.votes + (selectedPollOption === null ? 0 : 1)} votes</small>
+            <small>{post.poll.votes} {post.poll.votes === 1 ? "vote" : "votes"}{post.poll.selectedOption !== undefined ? " · You voted" : ""}</small>
           </fieldset>
         ) : null}
 

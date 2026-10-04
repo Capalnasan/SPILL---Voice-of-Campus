@@ -77,7 +77,11 @@
   font-size: 2.15rem;
   letter-spacing: -0.04em;
   line-height: 1;
+  overflow-wrap: anywhere;
 }
+
+.nameRow > div { min-width: 0; }
+.nameRow button { flex-shrink: 0; }
 
 .nameRow p,
 .bio {
@@ -101,6 +105,7 @@
   margin-top: 15px;
   color: var(--ink);
   font-size: 0.9rem;
+  overflow-wrap: anywhere;
 }
 
 .stats {
@@ -159,6 +164,39 @@
 .empty { padding: 78px 20px; text-align: center; }
 .empty h2 { margin: 0; font-size: 1.55rem; }
 .empty p { margin: 5px 0 0; color: var(--ink-soft); font-size: 0.84rem; }
+.empty button,
+.empty a { display: inline-block; margin-top: 18px; padding: 10px 16px; color: var(--on-accent); background: var(--violet); border-radius: 10px; cursor: pointer; font-weight: 700; }
+.replyCard { display: block; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.replyCard small { color: var(--violet-deep); }
+.replyCard p { margin: 8px 0; overflow-wrap: anywhere; }
+.replyCard span { color: var(--ink-soft); font-size: 0.75rem; }
+.replyCard:hover p { color: var(--violet-deep); }
+
+.editor {
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow-2);
+}
+.editor::backdrop { background: var(--scrim); backdrop-filter: blur(4px); }
+.editor form { display: grid; gap: 22px; padding: 28px; }
+.editor header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.editor header small { color: var(--violet-deep); font-size: 0.65rem; letter-spacing: 0.1em; }
+.editor h2 { margin: 4px 0 0; font-size: 1.8rem; }
+.editor button { padding: 10px 14px; background: var(--paper-soft); border-radius: 10px; cursor: pointer; }
+.editor header button { padding: 8px; }
+.editor label { display: grid; gap: 7px; font-size: 0.84rem; font-weight: 700; }
+.editor input,
+.editor textarea { width: 100%; padding: 12px; background: var(--paper-soft); border: 1px solid var(--line-strong); border-radius: 10px; }
+.editor textarea { resize: vertical; min-height: 100px; }
+.editor label small { color: var(--ink-soft); font-size: 0.73rem; font-weight: 400; }
+.editor footer { display: flex; justify-content: flex-end; gap: 10px; }
+.editor button[type="submit"] { color: var(--on-accent); background: var(--coral); font-weight: 700; }
+.editor button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 @media (max-width: 620px) {
   .cover { height: 128px; }

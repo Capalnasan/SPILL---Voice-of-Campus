@@ -1118,9 +1118,7 @@
   min-height: 92px;
 }
 
-.footerBrand span {
-  font-size: 1.65rem;
-}
+.footerBrand { --brand-width: 88px; }
 
 .footer nav {
   display: flex;

@@ -29,14 +29,8 @@
   content: "";
 }
 
-.shellBrand :global(span),
-.mobileBrand :global(span) {
-  font-size: 43px;
-}
-
-.mobileBrand :global(span) {
-  font-size: 34px;
-}
+.shellBrand { --brand-width: 98px; }
+.mobileBrand { --brand-width: 90px; }
 
 .navList {
   display: grid;
@@ -204,6 +198,7 @@
 .profileSummary > span:nth-child(2) {
   display: grid;
   flex: 1;
+  min-width: 0;
 }
 
 .profileSummary small {
@@ -213,6 +208,9 @@
 
 .profileSummary strong {
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .profileSummary > svg {
@@ -420,13 +418,10 @@
   }
 
   .leftRail > a {
-    width: 38px;
-    overflow: hidden;
+    width: 54px;
   }
 
-  .shellBrand :global(span) {
-    font-size: 34px;
-  }
+  .shellBrand { --brand-width: 54px; }
 
   .navList {
     width: 100%;

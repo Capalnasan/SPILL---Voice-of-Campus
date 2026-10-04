@@ -68,7 +68,7 @@ function LeftRail() {
 
   return (
     <aside className={styles.leftRail} aria-label="Primary navigation">
-      <SpillBrand className={styles.shellBrand} href="/feed" />
+      <SpillBrand className={styles.shellBrand} href="/feed" variant="compact" />
       <nav className={styles.navList}>
         {navItems.map((item) => (
           <NavLink item={item} key={item.href} />
@@ -100,11 +100,12 @@ function TopicIcon({ icon }: { icon: (typeof trendingTopics)[number]["icon"] }) 
 }
 
 function RightRail() {
+  const { profile } = useSpill();
   return (
     <aside className={styles.rightRail} aria-label="Community highlights">
       <Link className={styles.profileSummary} href="/profile">
         <span className={styles.profileAvatar}><VenetianMask aria-hidden="true" /></span>
-        <span><small>good to see you,</small><strong>sunflower</strong></span>
+        <span><small>good to see you,</small><strong>{profile.displayName}</strong></span>
         <ChevronDown aria-hidden="true" />
       </Link>
 
@@ -176,7 +177,7 @@ function BottomNav() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { notice } = useSpill();
+  const { notice, storageError } = useSpill();
 
   return (
     <div className={styles.shell}>
@@ -188,8 +189,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <RightRail />
       <BottomNav />
       <ComposerModal />
-      <div className={`${styles.toast} ${notice ? styles.toastVisible : ""}`} role="status" aria-live="polite">
-        {notice}
+      <div className={`${styles.toast} ${notice || storageError ? styles.toastVisible : ""}`} role="status" aria-live="polite">
+        {notice || storageError}
       </div>
     </div>
   );

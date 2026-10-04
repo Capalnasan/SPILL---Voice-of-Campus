@@ -1,6 +1,6 @@
 # What is next for Spill
 
-This file is the working roadmap from the completed frontend prototype to a production-ready MVP. Phase 1 is finished and frozen; backend work starts only after explicit approval.
+This file is the working roadmap from the frontend prototype to a production-ready MVP. The initial Phase 1 pass is complete; frontend refinements continue until the user signs off. Backend work starts only after explicit approval.
 
 ## Working agreement
 
@@ -18,6 +18,11 @@ Already implemented:
 - Responsive desktop and mobile layouts.
 - Persisted light/dark theme with system preference fallback and no-flash startup.
 - Mock posts/replies and interactive client-side state persisted in `localStorage`.
+- Versioned local storage for conversations, reply reactions, poll votes, and profile edits, with migration from the original saved feed.
+- Post-specific threaded replies, reply targeting, sorting, deletion that preserves child replies, and accurate reply counts.
+- Functional profile editing and public reply/media tabs; anonymous posts are excluded from the public profile.
+- Missing/deleted post states that never substitute an unrelated spill.
+- Supplied compact/long Spill logos used across the app, auth, and policy pages, with matching light/dark artwork and global browser-tab/home-screen icons.
 - Design concepts and tokens under `docs/design`.
 - ESLint, TypeScript type-check, unit-test, Playwright, and production-build scripts.
 - Component tests for authentication validation, the composer, post actions, and moderation.
@@ -72,7 +77,35 @@ Exit condition: the current frontend can be restored from version control.
 - [x] Add component tests for the composer, post actions, auth validation, and moderation queue.
 - [x] Add a Playwright smoke test for the main flow: open feed → create post → react → save → open post → reply.
 
-Exit condition: complete. The frontend has no knowingly inert core controls and passes lint, type-check, component tests, Playwright tests, production build, responsive QA, and the production dependency audit. The UI contract is now frozen until a requested product change requires an update.
+Exit condition: the initial frontend pass is complete. Follow-up inspection found interaction gaps; the refinement checklist below tracks their resolution before final frontend sign-off.
+
+## Frontend refinements — before backend approval
+
+Completed on 2026-10-04:
+
+- [x] Persist replies per post, including nested reply relationships and reactions, across refresh and navigation.
+- [x] Implement reply targeting and working sort controls while keeping children with their parent.
+- [x] Allow users to delete their own replies while preserving responses beneath them.
+- [x] Update reply counts consistently in post cards and conversation views.
+- [x] Persist poll choices, calculate percentages, and prevent repeat votes in the local prototype.
+- [x] Replace the unrelated-post fallback with loading and missing/deleted conversation states.
+- [x] Implement the profile editor with persisted display name and bio.
+- [x] Populate profile reply/media tabs from local content and exclude anonymous posts from public profile content.
+- [x] Migrate existing saved feeds without losing posts or bookmarks; report local storage failures.
+- [x] Add storage migration/error tests and browser coverage for refresh, threads, deletion, profile edits, media, and anonymity.
+
+Remaining frontend work:
+
+- [ ] Connect the anonymous-by-default setting to the composer and quick composer.
+- [ ] Persist activity read/unread state and derive navigation badges from it.
+- [ ] Add a report reason form with a reviewable local report record; distinguish preview behavior from server submission.
+- [ ] Make mute/block preferences reversible from settings instead of only removing posts from the feed.
+- [ ] Add confirmation before deleting an entire spill.
+- [ ] Complete frontend account-recovery screens and check all auth links.
+- [ ] Run an accessibility pass for tabs, menus, dialogs, and keyboard focus in both themes.
+- [ ] Get user approval that the frontend is finished before beginning backend implementation.
+
+Latest verification: production build, lint, TypeScript, 8 unit/component tests, and 16 desktop/mobile Playwright tests. Local state is still a single-device prototype; account sessions and shared data require the approved backend phase.
 
 ## Phase 2 — Lock the backend contract
 
@@ -314,7 +347,7 @@ Spill is ready for an MVP release only when all of the following are true:
 
 ## The next concrete task
 
-Phase 1 is complete. Do not begin backend implementation until approval is given.
+Continue the frontend refinements above, starting with settings/composer preferences and persistent activity state. The initial Phase 1 pass is complete, but final frontend sign-off remains pending. Do not begin backend implementation until approval is given.
 
 When backend work is approved:
 

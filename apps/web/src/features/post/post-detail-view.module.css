@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  padding-bottom: 96px;
+  padding-bottom: 180px;
 }
 
 .header {
@@ -49,9 +49,13 @@
   font-size: 0.8rem;
 }
 
-.sortRow button {
+.sortRow select {
+  max-width: 160px;
+  padding: 8px;
   color: var(--ink-soft);
-  background: transparent;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
   font-size: 0.76rem;
   cursor: pointer;
 }
@@ -68,7 +72,7 @@
 }
 
 .reply.nested {
-  margin-left: 46px;
+  margin-left: calc(var(--reply-depth, 1) * 24px);
 }
 
 .reply.nested::before {
@@ -104,6 +108,10 @@
   gap: 7px;
   font-size: 0.78rem;
 }
+
+.replyBody { min-width: 0; }
+.replyBody p { overflow-wrap: anywhere; }
+.replyBody p.deleted { color: var(--ink-faint); font-style: italic; }
 
 .replyBody header time { color: var(--ink-faint); font-size: 0.7rem; }
 .replyBody header button { margin-left: auto; padding: 2px; background: transparent; cursor: pointer; }
@@ -149,11 +157,31 @@
 
 .replyComposer label { min-width: 0; }
 .replyComposer input { width: 100%; padding: 10px 12px; background: var(--paper-soft); border: 0; border-radius: 12px; outline: 0; font-size: 0.82rem; }
+.replyComposer input:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 .replyComposer > button { display: grid; width: 36px; height: 36px; place-items: center; color: var(--on-accent); background: var(--coral); border-radius: 50%; cursor: pointer; }
 .replyComposer > button:disabled { color: var(--on-accent); background: var(--line-strong); cursor: not-allowed; }
 
+.replyTarget,
+.composerHint {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px;
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+}
+.replyTarget { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.replyTarget button { padding: 4px; background: transparent; border-radius: 6px; cursor: pointer; }
+.replyTarget strong { color: var(--violet-deep); }
+.composerHint { font-size: 0.65rem; }
+.loading { display: grid; gap: 18px; padding: 28px 24px; }
+.loading i { height: 100px; border-radius: 14px; background: var(--paper-soft); }
+
 .missing { display: grid; min-height: 70vh; place-items: center; align-content: center; text-align: center; }
 .missing h1 { margin: 0 0 14px; }
+.missing p { max-width: 360px; padding: 0 16px; margin: 0 0 20px; color: var(--ink-soft); }
 .missing a { color: var(--violet-deep); font-weight: 750; }
 
 @media (max-width: 1179px) {
@@ -169,6 +197,6 @@
   .original,
   .thread,
   .sortRow { padding-inline: 16px; }
-  .reply.nested { margin-left: 32px; }
+  .reply.nested { margin-left: calc(var(--reply-depth, 1) * 16px); }
   .replyComposer { right: 12px; bottom: 78px; left: 12px; }
 }

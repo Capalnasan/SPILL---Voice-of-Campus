@@ -32,12 +32,7 @@
 }
 
 .brand > span {
-  width: 7px;
-  height: 16px;
-  margin: 1px 0 0 5px;
-  border-radius: 80% 25% 70% 55%;
-  background: var(--coral);
-  transform: rotate(24deg);
+  --brand-width: 112px;
 }
 
 .header nav {
@@ -336,6 +331,7 @@
 }
 
 .footer .brand {
+  --brand-width: 88px;
   color: var(--ink);
   font-size: 27px;
 }

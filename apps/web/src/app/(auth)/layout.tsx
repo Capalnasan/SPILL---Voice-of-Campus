@@ -1,14 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SpillBrand } from "@/components/brand/SpillBrand";
 import styles from "./auth.module.css";
 
 export default function AuthLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <Link className={styles.brand} href="/" aria-label="Spill home">
-          spill<span className={styles.brandDrop} aria-hidden="true" />
-        </Link>
+        <SpillBrand className={styles.brand} />
         <Link className={styles.homeLink} href="/">
           Back to Spill
           <svg viewBox="0 0 20 20" aria-hidden="true">

@@ -14,8 +14,9 @@ export type Post = {
   image?: string;
   contentNote?: string;
   poll?: {
-    options: Array<{ label: string; percentage: number }>;
+    options: Array<{ label: string; percentage: number; votes?: number }>;
     votes: number;
+    selectedOption?: number;
   };
   avatar: "moon" | "flower" | "star" | "ghost" | "spark";
   avatarTone: "violet" | "pink" | "lime" | "coral" | "blue";
@@ -30,5 +31,18 @@ export type Reply = {
   depth: number;
   avatar: Post["avatar"];
   avatarTone: Post["avatarTone"];
+};
+
+export type ConversationReply = Reply & {
+  postId: string;
+  parentId?: string;
+  createdAt: number;
+  liked: boolean;
+  deleted?: boolean;
+};
+
+export type LocalProfile = {
+  displayName: string;
+  bio: string;
 };
 

@@ -6,11 +6,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { localPostRepository } from "@/repositories/post-repository";
-import type { Post } from "@/types/models";
+import type { ConversationReply, LocalProfile, Post } from "@/types/models";
 
 export type FeedTab = "for-you" | "fresh" | "following";
 
@@ -24,6 +25,9 @@ export type AddPostInput = {
 
 type SpillContextValue = {
   posts: Post[];
+  replies: ConversationReply[];
+  profile: LocalProfile;
+  storageError: string;
   activeTab: FeedTab;
   composerOpen: boolean;
   storageReady: boolean;
@@ -33,6 +37,11 @@ type SpillContextValue = {
   toggleSaved: (postId: string) => void;
   addPost: (input: AddPostInput | string) => Post;
   updatePost: (postId: string, content: string) => void;
+  voteInPoll: (postId: string, optionIndex: number) => void;
+  addReply: (postId: string, content: string, parentId?: string) => boolean;
+  toggleReplyLike: (replyId: string) => void;
+  removeReply: (replyId: string) => void;
+  updateProfile: (profile: LocalProfile) => void;
   removePost: (postId: string) => void;
   blockAuthor: (author: string) => void;
   muteAuthor: (author: string) => void;
@@ -44,7 +53,13 @@ type SpillContextValue = {
 const SpillContext = createContext<SpillContextValue | null>(null);
 
 export function SpillProvider({ children }: { children: ReactNode }) {
-  const [posts, setPosts] = useState<Post[]>(localPostRepository.initial);
+  const [feedState, setFeedState] = useState(localPostRepository.initial);
+  const { posts, replies, profile } = feedState;
+  const [storageError, setStorageError] = useState("");
+  const noticeTimer = useRef<number | null>(null);
+  const setPosts = useCallback((update: (posts: Post[]) => Post[]) => {
+    setFeedState((current) => ({ ...current, posts: update(current.posts) }));
+  }, []);
   const [activeTab, setActiveTab] = useState<FeedTab>("for-you");
   const [composerOpen, setComposerOpen] = useState(false);
   const [storageReady, setStorageReady] = useState(false);
@@ -52,14 +67,19 @@ export function SpillProvider({ children }: { children: ReactNode }) {
 
   const showNotice = useCallback((message: string) => {
     setNotice(message);
-    window.setTimeout(() => setNotice(""), 2400);
+    if (noticeTimer.current !== null) window.clearTimeout(noticeTimer.current);
+    noticeTimer.current = window.setTimeout(() => setNotice(""), 2400);
+  }, []);
+
+  useEffect(() => () => {
+    if (noticeTimer.current !== null) window.clearTimeout(noticeTimer.current);
   }, []);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
-      const savedPosts = localPostRepository.load();
+      const savedState = localPostRepository.load();
 
-      if (savedPosts) setPosts(savedPosts);
+      if (savedState) setFeedState(savedState);
       setStorageReady(true);
     });
 
@@ -71,8 +91,10 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    localPostRepository.save(posts);
-  }, [posts, storageReady]);
+    const result = localPostRepository.save(feedState);
+    const frame = window.requestAnimationFrame(() => setStorageError(result.ok ? "" : result.message));
+    return () => window.cancelAnimationFrame(frame);
+  }, [feedState, storageReady]);
 
   const toggleLike = useCallback((postId: string) => {
     setPosts((currentPosts) =>
@@ -86,7 +108,7 @@ export function SpillProvider({ children }: { children: ReactNode }) {
           : post,
       ),
     );
-  }, []);
+  }, [setPosts]);
 
   const toggleSaved = useCallback((postId: string) => {
     setPosts((currentPosts) =>
@@ -94,12 +116,12 @@ export function SpillProvider({ children }: { children: ReactNode }) {
         post.id === postId ? { ...post, saved: !post.saved } : post,
       ),
     );
-  }, []);
+  }, [setPosts]);
 
   const addPost = useCallback((input: AddPostInput | string) => {
     const nextInput = typeof input === "string" ? { content: input } : input;
     const newPost: Post = {
-      id: `spill-${Date.now()}`,
+      id: `spill-${crypto.randomUUID()}`,
       author: nextInput.anonymous ? "anonymous" : "sunflower",
       time: "now",
       topic: "campus life",
@@ -125,7 +147,7 @@ export function SpillProvider({ children }: { children: ReactNode }) {
     setActiveTab("for-you");
     showNotice("Your spill is live.");
     return newPost;
-  }, [showNotice]);
+  }, [setPosts, showNotice]);
 
   const updatePost = useCallback((postId: string, content: string) => {
     const nextContent = content.trim();
@@ -133,19 +155,91 @@ export function SpillProvider({ children }: { children: ReactNode }) {
     setPosts((currentPosts) =>
       currentPosts.map((post) => (post.id === postId ? { ...post, content: nextContent } : post)),
     );
+  }, [setPosts]);
+
+  const voteInPoll = useCallback((postId: string, optionIndex: number) => {
+    setPosts((current) => current.map((post) => {
+      const poll = post.poll;
+      if (post.id !== postId || !poll || poll.selectedOption !== undefined
+        || !Number.isInteger(optionIndex) || optionIndex < 0 || optionIndex >= poll.options.length) return post;
+      // Convert the fixture percentages to counts once; subsequent votes use exact counts.
+      const counts = poll.options.map((option) => option.votes ?? Math.round(option.percentage * poll.votes / 100));
+      const roundingDifference = poll.votes - counts.reduce((sum, count) => sum + count, 0);
+      const largestIndex = counts.indexOf(Math.max(...counts));
+      counts[largestIndex] += roundingDifference;
+      counts[optionIndex] += 1;
+      const votes = poll.votes + 1;
+      const percentages = counts.map((count) => Math.floor(count * 100 / votes));
+      const byRemainder = counts.map((count, index) => ({ index, remainder: (count * 100 / votes) % 1 }))
+        .sort((a, b) => b.remainder - a.remainder);
+      const missing = 100 - percentages.reduce((sum, percentage) => sum + percentage, 0);
+      for (let index = 0; index < missing; index += 1) percentages[byRemainder[index].index] += 1;
+      return { ...post, poll: { votes, selectedOption: optionIndex,
+        options: poll.options.map((option, index) => ({ ...option, votes: counts[index], percentage: percentages[index] })) } };
+    }));
+  }, [setPosts]);
+
+  const addReply = useCallback((postId: string, content: string, parentId?: string) => {
+    const text = content.trim();
+    const parent = parentId ? replies.find((item) => item.id === parentId && item.postId === postId && !item.deleted) : undefined;
+    if (!storageReady || !text || text.length > 280 || !posts.some((post) => post.id === postId) || (parentId && !parent)) return false;
+    const reply: ConversationReply = {
+      id: `reply-${crypto.randomUUID()}`, postId, parentId, content: text,
+      author: "sunflower", time: "now", likes: 0, liked: false,
+      depth: parent ? Math.min(parent.depth + 1, 3) : 0,
+      createdAt: Date.now(), avatar: "spark", avatarTone: "lime",
+    };
+    setFeedState((current) => ({ ...current,
+      replies: [...current.replies, reply],
+      posts: current.posts.map((post) => post.id === postId ? { ...post, replies: post.replies + 1 } : post),
+    }));
+    showNotice("Reply added to the conversation.");
+    return true;
+  }, [posts, replies, showNotice, storageReady]);
+
+  const toggleReplyLike = useCallback((replyId: string) => {
+    setFeedState((current) => ({ ...current,
+      replies: current.replies.map((reply) => reply.id === replyId && !reply.deleted
+        ? { ...reply, liked: !reply.liked, likes: Math.max(0, reply.likes + (reply.liked ? -1 : 1)) } : reply),
+    }));
   }, []);
 
+  const removeReply = useCallback((replyId: string) => {
+    setFeedState((current) => {
+      const reply = current.replies.find((item) => item.id === replyId);
+      if (!reply || reply.author !== "sunflower" || reply.deleted) return current;
+      return { ...current,
+        replies: current.replies.map((item) => item.id === replyId
+          ? { ...item, deleted: true, content: "", liked: false, likes: 0 } : item),
+        posts: current.posts.map((post) => post.id === reply.postId
+          ? { ...post, replies: Math.max(0, post.replies - 1) } : post),
+      };
+    });
+    showNotice("Your reply was deleted.");
+  }, [showNotice]);
+
+  const updateProfile = useCallback((next: LocalProfile) => {
+    if (!next.displayName.trim()) return;
+    setFeedState((current) => ({ ...current,
+      profile: { displayName: next.displayName.trim().slice(0, 40), bio: next.bio.trim().slice(0, 160) },
+    }));
+    showNotice("Your profile was updated.");
+  }, [showNotice]);
+
   const removePost = useCallback((postId: string) => {
-    setPosts((currentPosts) => currentPosts.filter((post) => post.id !== postId));
+    setFeedState((current) => ({ ...current,
+      posts: current.posts.filter((post) => post.id !== postId),
+      replies: current.replies.filter((reply) => reply.postId !== postId),
+    }));
   }, []);
 
   const blockAuthor = useCallback((author: string) => {
     setPosts((currentPosts) => currentPosts.filter((post) => post.author !== author));
-  }, []);
+  }, [setPosts]);
 
   const muteAuthor = useCallback((author: string) => {
     setPosts((currentPosts) => currentPosts.filter((post) => post.author !== author));
-  }, []);
+  }, [setPosts]);
 
   const openComposer = useCallback(() => setComposerOpen(true), []);
   const closeComposer = useCallback(() => setComposerOpen(false), []);
@@ -153,6 +247,9 @@ export function SpillProvider({ children }: { children: ReactNode }) {
   const value = useMemo<SpillContextValue>(
     () => ({
       posts,
+      replies,
+      profile,
+      storageError,
       activeTab,
       composerOpen,
       storageReady,
@@ -162,6 +259,11 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       toggleSaved,
       addPost,
       updatePost,
+      voteInPoll,
+      addReply,
+      toggleReplyLike,
+      removeReply,
+      updateProfile,
       removePost,
       blockAuthor,
       muteAuthor,
@@ -171,6 +273,9 @@ export function SpillProvider({ children }: { children: ReactNode }) {
     }),
     [
       posts,
+      replies,
+      profile,
+      storageError,
       activeTab,
       composerOpen,
       storageReady,
@@ -179,6 +284,11 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       toggleSaved,
       addPost,
       updatePost,
+      voteInPoll,
+      addReply,
+      toggleReplyLike,
+      removeReply,
+      updateProfile,
       removePost,
       blockAuthor,
       muteAuthor,
