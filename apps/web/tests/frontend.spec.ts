@@ -1,5 +1,24 @@
 import { expect, test } from "@playwright/test";
 
+test("entering the feed from the landing page and refreshing resolves the route", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+
+  await page.goto("/");
+  await page.getByRole("link", { name: /enter the feed/i }).first().click();
+  await expect(page).toHaveURL(/\/feed$/);
+  await expect(page).toHaveTitle("Home — Spill");
+  await expect(page.getByRole("region", { name: "Home", exact: true })).toBeVisible();
+
+  const response = await page.reload();
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole("region", { name: "Home", exact: true })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test("landing page supports a persistent dark theme", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /say what/i })).toBeVisible();
@@ -131,6 +150,10 @@ test("profile edits persist and anonymous spills stay off the public profile", a
   await page.goto("/profile");
   await page.getByRole("button", { name: "Edit profile", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Edit profile" });
+  await expect(editor).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(editor).not.toBeVisible();
+  await page.getByRole("button", { name: "Edit profile", exact: true }).click();
   await editor.getByRole("textbox", { name: /Display name/ }).fill("Sunny campus days");
   await editor.getByRole("textbox", { name: /Bio/ }).fill("Small wins, big coffee energy.");
   await editor.getByRole("button", { name: "Save profile" }).click();

@@ -26,7 +26,10 @@ export function ProfileEditor({ onClose }: { onClose: () => void }) {
 
   return (
     <dialog ref={dialogRef} className={styles.editor} aria-labelledby="profile-editor-title"
-      onCancel={onClose} onClose={onClose}
+      onCancel={onClose} onClose={(event) => {
+        // Strict Mode's effect cleanup queues a close event before reopening the dialog.
+        if (!event.currentTarget.open) onClose();
+      }}
       onClick={(event) => { if (event.target === dialogRef.current) onClose(); }}>
       <form onSubmit={submit}>
         <header>
