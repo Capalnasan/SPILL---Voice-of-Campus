@@ -26,7 +26,7 @@ const MAX_LENGTH = 500;
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
 export function ComposerModal() {
-  const { addPost, closeComposer, composerOpen } = useSpill();
+  const { addPost, closeComposer, composerOpen, preferences } = useSpill();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,12 +44,13 @@ export function ComposerModal() {
     if (!dialog) return;
 
     if (composerOpen && !dialog.open) {
+      setAnonymous(preferences.anonymousByDefault);
       dialog.showModal();
       window.requestAnimationFrame(() => textareaRef.current?.focus());
     } else if (!composerOpen && dialog.open) {
       dialog.close();
     }
-  }, [composerOpen]);
+  }, [composerOpen, preferences.anonymousByDefault]);
 
   const completePollOptions = pollOptions.map((option) => option.trim()).filter(Boolean);
   const pollValid = activeExtra !== "poll" || completePollOptions.length >= 2;

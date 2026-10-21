@@ -96,8 +96,8 @@ Completed on 2026-10-04:
 
 Remaining frontend work:
 
-- [ ] Connect the anonymous-by-default setting to the composer and quick composer.
-- [ ] Persist activity read/unread state and derive navigation badges from it.
+- [x] Connect the anonymous-by-default setting to the composer and quick composer.
+- [x] Persist activity read/unread state and derive navigation badges from it.
 - [ ] Add a report reason form with a reviewable local report record; distinguish preview behavior from server submission.
 - [ ] Make mute/block preferences reversible from settings instead of only removing posts from the feed.
 - [ ] Add confirmation before deleting an entire spill.

@@ -1,44 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Bell, ChevronRight, EyeOff, UserRound } from "lucide-react";
 import { PageHeading } from "@/components/ui/page-heading";
+import { useSpill } from "@/providers/spill-provider";
 import styles from "./settings-view.module.css";
 
-const initialToggles = {
-  anonymous: true,
-  reactions: true,
-  replies: true,
-  digest: false,
-};
-
 export function SettingsView() {
-  const [toggles, setToggles] = useState(initialToggles);
-  const [status, setStatus] = useState("");
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem("spill.settings.v1");
-    if (!saved) return;
-    const frame = window.requestAnimationFrame(() => {
-      try {
-        setToggles({ ...initialToggles, ...JSON.parse(saved) });
-      } catch {
-        window.localStorage.removeItem("spill.settings.v1");
-      }
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  function toggle(key: keyof typeof initialToggles) {
-    setToggles((current) => {
-      const next = { ...current, [key]: !current[key] };
-      window.localStorage.setItem("spill.settings.v1", JSON.stringify(next));
-      return next;
-    });
-    setStatus("Preference saved");
-    window.setTimeout(() => setStatus(""), 1600);
-  }
+  const { preferences, storageReady, updatePreference } = useSpill();
 
   return (
     <main>
@@ -52,8 +21,9 @@ export function SettingsView() {
           <SettingToggle
             label="Anonymous by default"
             description="Start new spills with your identity hidden."
-            checked={toggles.anonymous}
-            onChange={() => toggle("anonymous")}
+            checked={preferences.anonymousByDefault}
+            disabled={!storageReady}
+            onChange={() => updatePreference("anonymousByDefault", !preferences.anonymousByDefault)}
           />
         </section>
 
@@ -62,9 +32,9 @@ export function SettingsView() {
             <Bell size={20} aria-hidden="true" />
             <div><h2 id="notifications-title">Notifications</h2><p>Only the things you care about.</p></div>
           </div>
-          <SettingToggle label="Reactions" description="When someone feels your spill." checked={toggles.reactions} onChange={() => toggle("reactions")} />
-          <SettingToggle label="Replies & mentions" description="When the conversation finds you." checked={toggles.replies} onChange={() => toggle("replies")} />
-          <SettingToggle label="Weekly digest" description="A calm recap, once a week." checked={toggles.digest} onChange={() => toggle("digest")} />
+          <SettingToggle label="Reactions" description="When someone feels your spill." checked={preferences.reactionNotifications} disabled={!storageReady} onChange={() => updatePreference("reactionNotifications", !preferences.reactionNotifications)} />
+          <SettingToggle label="Replies & mentions" description="When the conversation finds you." checked={preferences.replyNotifications} disabled={!storageReady} onChange={() => updatePreference("replyNotifications", !preferences.replyNotifications)} />
+          <SettingToggle label="Weekly digest" description="A calm recap, once a week." checked={preferences.weeklyDigest} disabled={!storageReady} onChange={() => updatePreference("weeklyDigest", !preferences.weeklyDigest)} />
         </section>
 
         <section className={styles.section} aria-labelledby="account-title">
@@ -77,16 +47,15 @@ export function SettingsView() {
           <Link href="/" className={`${styles.linkRow} ${styles.signOut}`}>Log out <ChevronRight size={18} /></Link>
         </section>
       </div>
-      <div className={`${styles.toast} ${status ? styles.toastVisible : ""}`} role="status" aria-live="polite">{status}</div>
     </main>
   );
 }
 
-function SettingToggle({ label, description, checked, onChange }: { label: string; description: string; checked: boolean; onChange: () => void }) {
+function SettingToggle({ label, description, checked, disabled, onChange }: { label: string; description: string; checked: boolean; disabled?: boolean; onChange: () => void }) {
   return (
     <label className={styles.row}>
       <span><strong>{label}</strong><small>{description}</small></span>
-      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />
+      <input type="checkbox" checked={checked} disabled={disabled} onChange={onChange} className="sr-only" />
       <span className={`${styles.switch} ${checked ? styles.switchOn : ""}`} aria-hidden="true"><span /></span>
     </label>
   );

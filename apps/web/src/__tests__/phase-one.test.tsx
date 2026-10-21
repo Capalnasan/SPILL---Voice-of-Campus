@@ -1,9 +1,12 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { validate } from "@/app/(auth)/auth-form";
 import { ComposerModal } from "@/components/app/composer-modal";
 import { PostCard } from "@/components/app/post-card";
+import { ActivityView } from "@/features/activity/activity-view";
 import { ModerationView } from "@/features/admin/moderation-view";
+import { QuickComposer } from "@/features/feed/quick-composer";
+import { SettingsView } from "@/features/settings/settings-view";
 import { SpillProvider, useSpill } from "@/providers/spill-provider";
 
 beforeAll(() => {
@@ -69,5 +72,41 @@ describe("Phase 1 frontend interactions", () => {
     render(<ModerationView />);
     fireEvent.click(screen.getByRole("button", { name: /Remove & notify/ }));
     expect(screen.getByRole("status").textContent).toContain("SP-1048 actioned");
+  });
+
+  it("shares the anonymous default between settings and both composers", async () => {
+    render(
+      <SpillProvider>
+        <SettingsView />
+        <QuickComposer />
+        <ComposerModal />
+      </SpillProvider>,
+    );
+
+    const preference = screen.getByRole("checkbox", { name: /Anonymous by default/ });
+    const quickSwitch = screen.getByRole("switch", { name: /Post anonymously/ });
+    expect((preference as HTMLInputElement).checked).toBe(true);
+    expect(quickSwitch.getAttribute("aria-checked")).toBe("true");
+
+    await waitFor(() => expect(window.localStorage.getItem("spill.settings.v2")).not.toBeNull());
+    fireEvent.click(preference);
+    expect(quickSwitch.getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(screen.getByRole("button", { name: /What.s on your mind/ }));
+
+    const dialog = screen.getByRole("dialog", { name: "Create a spill" });
+    expect(within(dialog).getByRole("switch", { name: /Post anonymously/ }).getAttribute("aria-checked")).toBe("false");
+    await waitFor(() => expect(window.localStorage.getItem("spill.settings.v2")).toContain('"anonymousByDefault":false'));
+  });
+
+  it("persists activity read state", async () => {
+    const firstRender = render(<SpillProvider><ActivityView /></SpillProvider>);
+    await waitFor(() => expect(window.localStorage.getItem("spill.activity.v1")).not.toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: "Mark all read" }));
+    expect(screen.queryByRole("button", { name: "Mark all read" })).toBeNull();
+    await waitFor(() => expect(window.localStorage.getItem("spill.activity.v1")).toContain('"unread":false'));
+    firstRender.unmount();
+
+    render(<SpillProvider><ActivityView /></SpillProvider>);
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Mark all read" })).toBeNull());
   });
 });

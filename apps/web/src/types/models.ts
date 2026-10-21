@@ -46,3 +46,23 @@ export type LocalProfile = {
   bio: string;
 };
 
+export type SpillPreferences = {
+  anonymousByDefault: boolean;
+  reactionNotifications: boolean;
+  replyNotifications: boolean;
+  weeklyDigest: boolean;
+};
+
+export type ActivityType = "reply" | "like" | "mention" | "safety";
+
+export type ActivityItem = {
+  id: string;
+  type: ActivityType;
+  actor: string;
+  text: string;
+  preview: string;
+  time: string;
+  unread: boolean;
+  href: string;
+};
+

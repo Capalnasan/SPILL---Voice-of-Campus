@@ -11,7 +11,13 @@ import {
   type ReactNode,
 } from "react";
 import { localPostRepository } from "@/repositories/post-repository";
-import type { ConversationReply, LocalProfile, Post } from "@/types/models";
+import {
+  defaultPreferences,
+  localActivityRepository,
+  localPreferencesRepository,
+  seedActivity,
+} from "@/repositories/local-preferences-repository";
+import type { ActivityItem, ConversationReply, LocalProfile, Post, SpillPreferences } from "@/types/models";
 
 export type FeedTab = "for-you" | "fresh" | "following";
 
@@ -27,6 +33,9 @@ type SpillContextValue = {
   posts: Post[];
   replies: ConversationReply[];
   profile: LocalProfile;
+  preferences: SpillPreferences;
+  activity: ActivityItem[];
+  unreadActivityCount: number;
   storageError: string;
   activeTab: FeedTab;
   composerOpen: boolean;
@@ -42,6 +51,9 @@ type SpillContextValue = {
   toggleReplyLike: (replyId: string) => void;
   removeReply: (replyId: string) => void;
   updateProfile: (profile: LocalProfile) => void;
+  updatePreference: <Key extends keyof SpillPreferences>(key: Key, value: SpillPreferences[Key]) => void;
+  markActivityRead: (activityId: string) => void;
+  markAllActivityRead: () => void;
   removePost: (postId: string) => void;
   blockAuthor: (author: string) => void;
   muteAuthor: (author: string) => void;
@@ -56,6 +68,8 @@ export function SpillProvider({ children }: { children: ReactNode }) {
   const [feedState, setFeedState] = useState(localPostRepository.initial);
   const { posts, replies, profile } = feedState;
   const [storageError, setStorageError] = useState("");
+  const [preferences, setPreferences] = useState<SpillPreferences>(defaultPreferences);
+  const [activity, setActivity] = useState<ActivityItem[]>(seedActivity);
   const noticeTimer = useRef<number | null>(null);
   const setPosts = useCallback((update: (posts: Post[]) => Post[]) => {
     setFeedState((current) => ({ ...current, posts: update(current.posts) }));
@@ -80,6 +94,8 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       const savedState = localPostRepository.load();
 
       if (savedState) setFeedState(savedState);
+      setPreferences(localPreferencesRepository.load());
+      setActivity(localActivityRepository.load());
       setStorageReady(true);
     });
 
@@ -95,6 +111,15 @@ export function SpillProvider({ children }: { children: ReactNode }) {
     const frame = window.requestAnimationFrame(() => setStorageError(result.ok ? "" : result.message));
     return () => window.cancelAnimationFrame(frame);
   }, [feedState, storageReady]);
+
+  useEffect(() => {
+    if (!storageReady) return;
+    const preferencesResult = localPreferencesRepository.save(preferences);
+    const activityResult = localActivityRepository.save(activity);
+    const failed = [preferencesResult, activityResult].find((result) => !result.ok);
+    const frame = window.requestAnimationFrame(() => setStorageError(failed && !failed.ok ? failed.message : ""));
+    return () => window.cancelAnimationFrame(frame);
+  }, [activity, preferences, storageReady]);
 
   const toggleLike = useCallback((postId: string) => {
     setPosts((currentPosts) =>
@@ -226,6 +251,20 @@ export function SpillProvider({ children }: { children: ReactNode }) {
     showNotice("Your profile was updated.");
   }, [showNotice]);
 
+  const updatePreference = useCallback(<Key extends keyof SpillPreferences>(key: Key, nextValue: SpillPreferences[Key]) => {
+    setPreferences((current) => ({ ...current, [key]: nextValue }));
+    showNotice("Preference saved.");
+  }, [showNotice]);
+
+  const markActivityRead = useCallback((activityId: string) => {
+    setActivity((items) => items.map((item) => item.id === activityId ? { ...item, unread: false } : item));
+  }, []);
+
+  const markAllActivityRead = useCallback(() => {
+    setActivity((items) => items.map((item) => item.unread ? { ...item, unread: false } : item));
+    showNotice("All activity marked as read.");
+  }, [showNotice]);
+
   const removePost = useCallback((postId: string) => {
     setFeedState((current) => ({ ...current,
       posts: current.posts.filter((post) => post.id !== postId),
@@ -249,6 +288,9 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       posts,
       replies,
       profile,
+      preferences,
+      activity,
+      unreadActivityCount: activity.filter((item) => item.unread).length,
       storageError,
       activeTab,
       composerOpen,
@@ -264,6 +306,9 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       toggleReplyLike,
       removeReply,
       updateProfile,
+      updatePreference,
+      markActivityRead,
+      markAllActivityRead,
       removePost,
       blockAuthor,
       muteAuthor,
@@ -275,6 +320,8 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       posts,
       replies,
       profile,
+      preferences,
+      activity,
       storageError,
       activeTab,
       composerOpen,
@@ -289,6 +336,9 @@ export function SpillProvider({ children }: { children: ReactNode }) {
       toggleReplyLike,
       removeReply,
       updateProfile,
+      updatePreference,
+      markActivityRead,
+      markAllActivityRead,
       removePost,
       blockAuthor,
       muteAuthor,

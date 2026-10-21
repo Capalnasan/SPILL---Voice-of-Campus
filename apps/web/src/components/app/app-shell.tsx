@@ -45,7 +45,7 @@ function isCurrentPath(pathname: string, href: string) {
   return pathname === href || (href !== "/feed" && pathname.startsWith(`${href}/`));
 }
 
-function NavLink({ item, compact = false }: { item: NavItem; compact?: boolean }) {
+function NavLink({ item, unreadActivityCount, compact = false }: { item: NavItem; unreadActivityCount: number; compact?: boolean }) {
   const pathname = usePathname();
   const active = isCurrentPath(pathname ?? "", item.href);
   const Icon = item.icon;
@@ -58,20 +58,20 @@ function NavLink({ item, compact = false }: { item: NavItem; compact?: boolean }
     >
       <Icon aria-hidden="true" strokeWidth={active ? 2.45 : 2} />
       <span>{item.label}</span>
-      {item.label === "Activity" ? <i className={styles.notificationDot}>1</i> : null}
+      {item.label === "Activity" && unreadActivityCount > 0 ? <i className={styles.notificationDot}>{unreadActivityCount}</i> : null}
     </Link>
   );
 }
 
 function LeftRail() {
-  const { openComposer } = useSpill();
+  const { openComposer, unreadActivityCount } = useSpill();
 
   return (
     <aside className={styles.leftRail} aria-label="Primary navigation">
       <SpillBrand className={styles.shellBrand} href="/feed" variant="compact" />
       <nav className={styles.navList}>
         {navItems.map((item) => (
-          <NavLink item={item} key={item.href} />
+          <NavLink item={item} unreadActivityCount={unreadActivityCount} key={item.href} />
         ))}
       </nav>
       <button className={styles.spillButton} type="button" onClick={openComposer}>
@@ -100,7 +100,7 @@ function TopicIcon({ icon }: { icon: (typeof trendingTopics)[number]["icon"] }) 
 }
 
 function RightRail() {
-  const { profile } = useSpill();
+  const { profile, preferences } = useSpill();
   return (
     <aside className={styles.rightRail} aria-label="Community highlights">
       <Link className={styles.profileSummary} href="/profile">
@@ -129,7 +129,7 @@ function RightRail() {
         <h2 className="display-type">Your space</h2>
         <div className={styles.spaceRow}>
           <VenetianMask aria-hidden="true" />
-          <span><strong><i />Anonymous mode: on</strong><small>Your posts, identity, and activity stay private.</small></span>
+          <span><strong><i className={preferences.anonymousByDefault ? "" : styles.inactiveStatus} />Anonymous mode: {preferences.anonymousByDefault ? "on" : "off"}</strong><small>New spills {preferences.anonymousByDefault ? "start with your identity hidden" : "start with your username shown"}.</small></span>
         </div>
         <Link className={styles.spaceRow} href="/community-rules">
           <FileText aria-hidden="true" />
@@ -149,29 +149,33 @@ function RightRail() {
 }
 
 function MobileHeader() {
+  const { unreadActivityCount } = useSpill();
   return (
     <header className={styles.mobileHeader}>
       <SpillBrand className={styles.mobileBrand} href="/feed" />
       <div>
         <Link href="/explore" aria-label="Search"><Search aria-hidden="true" /></Link>
-        <Link href="/activity" aria-label="Activity"><Bell aria-hidden="true" /></Link>
+        <Link className={styles.mobileActivity} href="/activity" aria-label={`Activity${unreadActivityCount ? `, ${unreadActivityCount} unread` : ""}`}>
+          <Bell aria-hidden="true" />
+          {unreadActivityCount ? <i className={styles.notificationDot}>{unreadActivityCount}</i> : null}
+        </Link>
       </div>
     </header>
   );
 }
 
 function BottomNav() {
-  const { openComposer } = useSpill();
+  const { openComposer, unreadActivityCount } = useSpill();
 
   return (
     <nav className={styles.bottomNav} aria-label="Mobile navigation">
-      <NavLink compact item={mobileNavItems[0]} />
-      <NavLink compact item={mobileNavItems[1]} />
+      <NavLink compact item={mobileNavItems[0]} unreadActivityCount={unreadActivityCount} />
+      <NavLink compact item={mobileNavItems[1]} unreadActivityCount={unreadActivityCount} />
       <button className={styles.createMobile} type="button" onClick={openComposer} aria-label="Create a spill">
         <Plus aria-hidden="true" />
       </button>
-      <NavLink compact item={mobileNavItems[2]} />
-      <NavLink compact item={mobileNavItems[3]} />
+      <NavLink compact item={mobileNavItems[2]} unreadActivityCount={unreadActivityCount} />
+      <NavLink compact item={mobileNavItems[3]} unreadActivityCount={unreadActivityCount} />
     </nav>
   );
 }

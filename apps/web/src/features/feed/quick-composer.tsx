@@ -1,14 +1,13 @@
 "use client";
 
 import { BarChart3, Image as ImageIcon, VenetianMask } from "lucide-react";
-import { useState } from "react";
 import { useSpill } from "@/providers/spill-provider";
 import { Avatar } from "@/components/app/avatar";
 import styles from "./quick-composer.module.css";
 
 export function QuickComposer() {
-  const { openComposer } = useSpill();
-  const [anonymous, setAnonymous] = useState(true);
+  const { openComposer, preferences, storageReady, updatePreference } = useSpill();
+  const anonymous = preferences.anonymousByDefault;
 
   return (
     <section className={styles.composer} aria-label="Create a spill">
@@ -32,7 +31,8 @@ export function QuickComposer() {
           type="button"
           role="switch"
           aria-checked={anonymous}
-          onClick={() => setAnonymous((current) => !current)}
+          disabled={!storageReady}
+          onClick={() => updatePreference("anonymousByDefault", !anonymous)}
         >
           <i className={anonymous ? styles.switchOn : ""} aria-hidden="true"><b /></i>
           <VenetianMask aria-hidden="true" />

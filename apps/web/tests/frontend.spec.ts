@@ -179,3 +179,30 @@ test("profile edits persist and anonymous spills stay off the public profile", a
   await page.getByRole("tab", { name: "Media", exact: true }).click();
   await expect(page.getByText("My public campus photo.")).toBeVisible();
 });
+
+test("anonymous defaults and unread activity badges stay synchronized", async ({ page }) => {
+  await page.goto("/settings");
+  const anonymousDefault = page.getByRole("checkbox", { name: /Anonymous by default/ });
+  await expect(anonymousDefault).toBeChecked();
+  await expect(anonymousDefault).toBeEnabled();
+  await page.locator("label").filter({ hasText: "Anonymous by default" }).click();
+  await expect(anonymousDefault).not.toBeChecked();
+
+  await page.goto("/feed");
+  const quickAnonymousSwitch = page.getByRole("switch", { name: /Post anonymously/ });
+  if (await quickAnonymousSwitch.count()) {
+    await expect(quickAnonymousSwitch).toHaveAttribute("aria-checked", "false");
+  }
+  await page.getByRole("button", { name: /create a spill|spill something/i }).first().click();
+  await expect(page.getByRole("dialog").getByRole("switch", { name: /Post anonymously/ })).toHaveAttribute("aria-checked", "false");
+  await page.keyboard.press("Escape");
+
+  const activityLink = page.getByRole("link", { name: "Activity" }).first();
+  await expect(activityLink).toContainText("2");
+  await activityLink.click();
+  await page.getByRole("button", { name: "Mark all read" }).click();
+  await expect(page.getByRole("link", { name: "Activity" }).first()).not.toContainText("2");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Mark all read" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Activity" }).first()).not.toContainText("2");
+});
